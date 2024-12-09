@@ -1,0 +1,4 @@
+{
+    "**/*.{js,jsx,ts,tsx}": ["prettier --config .prettierrc --write -u"],
+    "apps/next-web/**/*.{js,jsx,ts,tsx}": ["eslint --fix"]
+}
