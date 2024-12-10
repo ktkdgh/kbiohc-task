@@ -1,24 +1,24 @@
 {
-    "search.exclude": {
-        "**/.yarn": true,
-        "**/.pnp.*": true
-    },
-    "typescript.tsdk": ".yarn/sdks/typescript/lib",
-    "typescript.enablePromptUseWorkspaceTsdk": true,
-    "eslint.nodePath": ".yarn/sdks",
-    "eslint.probe": ["javascript", "typescript", "html", "vue", "markdown"],
-    "eslint.validate": ["javascript", "typescript"],
-    "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnSave": true,
-    "editor.rulers": [120],
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit",
-        "source.organizeImports": "explicit"
-    },
-    "material-icon-theme.folders.associations": {
-        "dockers": "Docker",
-        "stores": "Global"
-    },
-    "cSpell.words": ["nestjs", "typecheck"]
+	"search.exclude": {
+		"**/.yarn": true,
+		"**/.pnp.*": true
+	},
+	"typescript.tsdk": ".yarn/sdks/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"eslint.nodePath": ".yarn/sdks",
+	"eslint.probe": ["javascript", "typescript", "html", "vue", "markdown"],
+	"eslint.validate": ["javascript", "typescript"],
+	"prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"editor.rulers": [130],
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit",
+		"source.organizeImports": "explicit"
+	},
+	"material-icon-theme.folders.associations": {
+		"dockers": "Docker",
+		"stores": "Global"
+	},
+	"cSpell.words": ["nestjs", "typecheck"]
 }
