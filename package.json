@@ -1,24 +1,25 @@
 {
-  "name": "kbiohc-task",
-  "packageManager": "yarn@4.5.3",
-  "private": true,
-  "scripts": {
-    "postinstall": "husky install",
-    "lint-staged": "lint-staged",
-    "g:typecheck": "yarn workspaces foreach -pv run typecheck",
-    "dev:backend": "yarn workspace backend start --watch",
-    "dev:frontend": "yarn workspace frontend dev"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
-  "devDependencies": {
-    "eslint": "^8.40.0",
-    "eslint-config-prettier": "^8.8.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^13.2.2",
-    "prettier": "^2.8.8",
-    "typescript": "^5.7.2"
-  }
+    "name": "kbiohc-task",
+    "packageManager": "yarn@4.5.3",
+    "private": true,
+    "scripts": {
+        "postinstall": "husky install",
+        "lint-staged": "lint-staged",
+        "g:typecheck": "yarn workspaces foreach -pv run typecheck",
+        "dev:backend": "yarn workspace backend start --watch",
+        "dev:frontend": "yarn workspace frontend dev"
+    },
+    "workspaces": [
+        "apps/*",
+        "packages/*"
+    ],
+    "devDependencies": {
+        "eslint": "^8.40.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-plugin-prettier": "^5.2.1",
+        "husky": "^8.0.3",
+        "lint-staged": "^13.2.2",
+        "prettier": "^3.4.2",
+        "typescript": "^5.7.2"
+    }
 }
