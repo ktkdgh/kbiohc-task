@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { CustomException } from '../../../utils/error/customException';
 import { IJwtPayload } from '../interfaces/jwtPayload';
@@ -32,9 +33,42 @@ export class TokenService {
 			throw new CustomException(
 				'Failed to update the refresh token.',
 				HttpStatus.INTERNAL_SERVER_ERROR,
-				-1608,
+				-1100,
 			);
 		}
+	}
+
+	async verifyToken(token: string) {
+		const { payload } = this.verifyRefreshToken(token);
+		const user = await this.userRepository
+			.findOne({ _id: payload.sub.id })
+			.exec();
+
+		if (!user) {
+			throw new CustomException(
+				'Not found for the specified user info.',
+				HttpStatus.FORBIDDEN,
+				-1101,
+			);
+		}
+
+		const isMatched = bcrypt.compareSync(token, user.refreshToken);
+		if (!isMatched) {
+			await this.userRepository
+				.updateOne(
+					{ _id: user.id },
+					{ $set: { refreshToken: 'defaultValue' } },
+				)
+				.exec();
+
+			throw new CustomException(
+				'Refresh token mismatch.',
+				HttpStatus.FORBIDDEN,
+				-1102,
+			);
+		}
+
+		return this.issuehToken(user.id);
 	}
 
 	verifyRefreshToken(token: string): IJwtPayload {
@@ -45,27 +79,7 @@ export class TokenService {
 				secret: JWT_REFRESH_SECRET_KEY,
 			});
 		} catch (error) {
-			if (error instanceof TokenExpiredError) {
-				throw new CustomException(
-					'The provided refresh token has expired.',
-					HttpStatus.FORBIDDEN,
-					-1204,
-				);
-			} else if (error instanceof JsonWebTokenError) {
-				throw new CustomException(
-					'There was an issue with the JWT(RefreshToken).',
-					HttpStatus.FORBIDDEN,
-					-1207,
-				);
-			} else if (error instanceof SyntaxError) {
-				throw new CustomException(
-					'There was a syntax error with the provided JWT(RefreshToken).',
-					HttpStatus.FORBIDDEN,
-					-1210,
-				);
-			} else {
-				throw error;
-			}
+			this.handleJwtError(error, 'refresh');
 		}
 	}
 
@@ -77,27 +91,7 @@ export class TokenService {
 				secret: JWT_ACCESS_SECRET_KEY,
 			});
 		} catch (error) {
-			if (error instanceof TokenExpiredError) {
-				throw new CustomException(
-					'The provided access token has expired.',
-					HttpStatus.UNAUTHORIZED,
-					-1101,
-				);
-			} else if (error instanceof JsonWebTokenError) {
-				throw new CustomException(
-					'There was an issue with the JWT(AccessToken).',
-					HttpStatus.FORBIDDEN,
-					-1206,
-				);
-			} else if (error instanceof SyntaxError) {
-				throw new CustomException(
-					'There was a syntax error with the provided JWT(AccessToken).',
-					HttpStatus.FORBIDDEN,
-					-1209,
-				);
-			} else {
-				throw error;
-			}
+			this.handleJwtError(error, 'access');
 		}
 	}
 
@@ -135,5 +129,35 @@ export class TokenService {
 				...options,
 			},
 		);
+	}
+
+	private handleJwtError(error: any, type: 'access' | 'refresh') {
+		if (error instanceof TokenExpiredError) {
+			if (type === 'access') {
+				throw new CustomException(
+					`${type} token has expired.`,
+					HttpStatus.UNAUTHORIZED,
+					-1103,
+				);
+			}
+			throw new CustomException(
+				`${type} token has expired.`,
+				HttpStatus.FORBIDDEN,
+				-1104,
+			);
+		}
+
+		if (
+			error instanceof JsonWebTokenError ||
+			error instanceof SyntaxError
+		) {
+			throw new CustomException(
+				`There was an issue with the ${type}Token.`,
+				HttpStatus.FORBIDDEN,
+				-1105,
+			);
+		}
+
+		throw error;
 	}
 }

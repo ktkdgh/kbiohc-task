@@ -12,10 +12,10 @@ export interface CommentDocument extends Comment, Document {
 
 @Schema({ versionKey: false, timestamps: { currentTime: getCurrentDate } })
 export class Comment {
-	@Prop({ index: true, ref: 'User', type: SchemaTypes.ObjectId })
+	@Prop({ ref: 'User', type: SchemaTypes.ObjectId })
 	userId: User;
 
-	@Prop({ index: true, ref: 'Post', type: SchemaTypes.ObjectId })
+	@Prop({ ref: 'Post', type: SchemaTypes.ObjectId })
 	postId: Post;
 
 	@Prop({ required: true, type: SchemaTypes.String })
@@ -23,6 +23,7 @@ export class Comment {
 }
 
 const commentSchema = SchemaFactory.createForClass(Comment);
+commentSchema.index({ userId: 1, postId: 1 });
 commentSchema.methods = {
 	Mapper() {
 		return getViewFields<Omit<IComment, '_id'>>(this, [
